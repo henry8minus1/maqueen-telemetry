@@ -1,0 +1,11 @@
+{
+  "name": "maqueen-telemetry",
+  "version": "1.0.0",
+  "description": "Background Maqueen V5 and micro:bit telemetry for a four-robot dashboard",
+  "license": "MIT",
+  "dependencies": {"core": "*", "radio": "*"},
+  "files": ["telemetry.ts", "README.md"],
+  "testFiles": ["test.ts"],
+  "public": true,
+  "supportedTargets": ["microbit"]
+}

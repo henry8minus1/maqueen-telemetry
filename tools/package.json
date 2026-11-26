@@ -1,0 +1,4 @@
+{
+  "private": true,
+  "dependencies": {"@microbit/microbit-fs": "0.11.0"}
+}

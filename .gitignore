@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+.venv/
+node_modules/
+pxt_modules/
+built/
+wireless_logs/
+wireless_status.json
+*.log
+.DS_Store
