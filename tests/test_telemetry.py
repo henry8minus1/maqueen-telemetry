@@ -90,6 +90,12 @@ class TelemetryTests(unittest.TestCase):
             self.assertEqual(p[5]['program_tag'],'robot%d'%robot)
         self.assertEqual(len(self.decoder.count),4)
 
+    def test_demo_fields(self):
+        for payload,key,value in [('o123456','light_commands','123456'),('s255','sound',255),('t1','logo',1),('i42','ir_activity',42),('h-1','heading',None),('h240','heading',240),('m51','magnetic_uT',51),('l30','microbit_light',30)]:
+            self.assertEqual(self.decoder.decode(('MT1X01'+payload).encode(),1)[5][key],value)
+        for payload in ('o123','o123459','sno'):
+            with self.assertRaises(ValueError):self.decoder.decode(('MT1X01'+payload).encode(),1)
+
     def test_bad_frames(self):
         for value in (b'noise',b'MT',b'junkMT1N01bad'):
             self.assertIsNone(self.decoder.decode(value,1))

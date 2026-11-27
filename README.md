@@ -6,6 +6,10 @@ Telemetry is compiled/downloaded **alongside each student's program**. It is not
 
 ## Downloads
 
+For a stationary demonstration of all controllable lights and sensor telemetry,
+see [the lights and sensors demo](docs/lights-sensors-demo.md) and flash
+`examples/lights_sensors.hex` plus the updated receiver HEX.
+
 Use the [latest release](https://github.com/henry8minus1/maqueen-telemetry/releases/latest) for the complete ZIP, receiver HEX, and starter HEX files. Or choose **Code → Download ZIP**. Four robots require five micro:bits total, including the receiver.
 
 1. Flash `receiver.hex` to the micro:bit that stays plugged into the teacher's computer.

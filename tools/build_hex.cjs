@@ -7,3 +7,4 @@ const runtime=fs.readFileSync(process.argv[2],'utf8');
 function build(name,files){const img=new MicropythonFsHex(runtime);for(const [target,source] of Object.entries(files))img.write(target,fs.readFileSync(path.join(root,source),'utf8'));fs.writeFileSync(path.join(root,name),img.getIntelHex());console.log(name);}
 build('receiver/receiver.hex',{'main.py':'receiver/main.py','decoder.py':'receiver/decoder.py'});
 build('examples/starter_python.hex',{'main.py':'examples/starter_python.py'});
+build('examples/lights_sensors.hex',{'main.py':'examples/lights_sensors.py','telemetry.py':'python/telemetry.py'});

@@ -75,6 +75,18 @@ class Decoder:
             data['line'] = bits
         elif kind == 'K':
             data['battery'] = int(value)
+        elif kind == 'X':
+            keys = {'s':'sound', 't':'logo', 'i':'ir_activity', 'h':'heading', 'm':'magnetic_uT', 'l':'microbit_light'}
+            if value[:1] == 'o':
+                codes = value[1:]
+                if len(codes) != 6 or any(c not in '01234567' for c in codes):
+                    raise ValueError('invalid light colors')
+                data['light_commands'] = codes
+            elif value[:1] in keys:
+                number = int(value[1:])
+                data[keys[value[0]]] = None if value[0] == 'h' and number < 0 else number
+            else:
+                return None
         elif kind == 'Q':
             data['sensor_polling'] = value == '1'
         else:

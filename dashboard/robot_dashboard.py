@@ -107,7 +107,12 @@ class Dashboard:
   event=next((e for e in reversed(m.events) if e[1][0]!='heartbeat'),None)
   if event:
    msg=str(event[1][0])+': '+str(event[1][1]);text(18,365,msg[:95],9,MUTED)
-  text(630,340,'* stale / unavailable',8,MUTED,anchor='e')
+  codes=m.value('light_commands','000000');palette=['#253441','#ff4040','#40ff70','#ffff50','#4080ff','#e050ff','#40ffff','#ffffff']
+  if len(codes)==6 and all(v in '01234567' for v in codes):
+   for i,v in enumerate(codes):oval(85+i*25,350,102+i*25,362,palette[int(v)])
+  text(18,375,'Light commands: headlights L/R, RGB 1–4',8,MUTED)
+  text(303,346,'Sound '+str(m.value('sound','—'))+'  Logo '+str(m.value('logo','—'))+'  IR '+str(m.value('ir_activity','—')),9)
+  text(303,368,'Mag µT '+str(m.value('magnetic_uT','—'))+'  Ambient '+str(m.value('microbit_light','—')),9,MUTED)
   tag=m.value('program_tag','unreported'); version=m.value('library_version','?'); runtime=m.value('runtime','?')
   expected=self.expected.get().strip()
   verified=m.fresh('program_tag',now) and m.fresh('library_version',now) and tag==expected and version=='1.0.0'
