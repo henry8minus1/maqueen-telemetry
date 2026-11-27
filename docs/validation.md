@@ -15,7 +15,10 @@ Run `python -m unittest discover -s tests -v`.
 
 - MicroPython V2 starter ran on a physical micro:bit: `microbit.run_every` was available and scheduled callbacks stayed active while the main loop handled buttons/display. Receiver forwarded runtime `python`, library `1.0.0`, lesson `lesson1-v1`, acceleration, temperature, buttons and reconstructed LEDs.
 - MakeCode diagnostic background callback ran repeatedly on the same board. Raw MakeCode radio bytes were received when the MicroPython receiver used `length=32`, at 1 Mbit/s, group 83/channel 17. The official type/length/string envelope matched the decoder. Final receiver explicitly uses 32-byte packets.
-- Final end-to-end MakeCode metadata/display confirmation is recorded in release notes after device testing; a successful compilation alone is not treated as a hardware test.
+- Final shared receiver and MakeCode starter verified end to end on two physical V2 boards: received `runtime=makecode`, `library_version=1.0.0`, `program_tag=lesson1-v1`, buttons, acceleration, temperature and reconstructed 25-pixel LED image.
+- W8 application restored with reusable Python telemetry: received `runtime=python`, `library_version=1.0.0`, `program_tag=w8-v1`, line/analog/light readings and actual LED pixels while the robot remained idle.
+- Windows produced flash error 521 during development; all source HEX checksums were valid. An unbuffered `robocopy /J` transfer recovered the receiver. Check the running tag/version after flashing.
+- Packaged graphical dashboard visually verified with Robot 1 live, `MATCH w8-v1 / 1.0.0 python`, sensor readings and actual LED pixels. The other three slots remained waiting; no simulated data was displayed as live.
 
 ## Known boundaries
 

@@ -27,10 +27,10 @@ class Fleet:
   if p[4]=='state' and not isinstance(p[5],dict):raise ValueError('Invalid state')
   self.robots[p[1]].accept(p,int(rssi),now)
 class Dashboard:
- def __init__(self):
+ def __init__(self,port_name='COM5',expected_lesson='lesson1-v1'):
   self.root=tk.Tk();self.root.title('Maqueen Fleet | Live Telemetry');self.root.geometry('1380x900');self.root.configure(bg=BG)
   self.fleet=Fleet();self.q=queue.Queue();self.closed=threading.Event();self.generation=0
-  self.expected=tk.StringVar(value='lesson1-v1');self.port=tk.StringVar(value='COM5');self.status=tk.StringVar(value='Connectingâ€¦')
+  self.expected=tk.StringVar(value=expected_lesson);self.port=tk.StringVar(value=port_name);self.status=tk.StringVar(value='Connecting…')
   top=tk.Frame(self.root,bg=BG);top.pack(fill='x',padx=20,pady=12)
   tk.Label(top,text='MAQUEEN  /  FLEET MONITOR',font=('Segoe UI',21,'bold'),fg=TEXT,bg=BG).pack(side='left')
   ttk.Button(top,text='Reconnect receiver',command=self.connect).pack(side='right',padx=8)
@@ -44,7 +44,7 @@ class Dashboard:
    grid.rowconfigure(i//2,weight=1);grid.columnconfigure(i%2,weight=1)
    c=tk.Canvas(grid,bg=PANEL,highlightthickness=0);c.grid(row=i//2,column=i%2,sticky='nsew',padx=6,pady=6);self.cards.append(c)
   bottom=tk.Frame(self.root,bg=BG);bottom.pack(fill='x',padx=20,pady=(0,10))
-  tk.Label(bottom,text='One USB receiver Â· four unique robot IDs Â· LED pixels are measured, not inferred',fg=MUTED,bg=BG,font=('Segoe UI',10)).pack(side='left')
+  tk.Label(bottom,text='One USB receiver · four unique robot IDs · LED pixels are measured, not inferred',fg=MUTED,bg=BG,font=('Segoe UI',10)).pack(side='left')
   self.selected=tk.IntVar(value=1)
   ttk.Combobox(bottom,values=[1,2,3,4],textvariable=self.selected,width=3,state='readonly').pack(side='right')
   ttk.Button(bottom,text='Sensor details',command=self.details).pack(side='right',padx=8)
@@ -75,7 +75,7 @@ class Dashboard:
   if not m.last:
    text(330,165,'No transmitter heard yet',15,MUTED,anchor='center')
    text(330,195,'Program a robot with ID '+str(rid),11,MUTED,anchor='center');return
-  text(18,54,f'{m.rssi} dBm  Â·  {m.received} packets  Â·  {m.missed} USB gaps  Â·  {now-m.last:.1f}s ago',9,MUTED)
+  text(18,54,f'{m.rssi} dBm  ·  {m.received} packets  ·  {m.missed} USB gaps  ·  {now-m.last:.1f}s ago',9,MUTED)
   # Stylized top view follows Maqueen component arrangement.
   rect(45,133,80,302,'#070b10');rect(235,133,270,302,'#070b10')
   for y in range(140,300,15):rect(48,y,77,y+3,'#26313b');rect(238,y,267,y+3,'#26313b')
@@ -94,15 +94,15 @@ class Dashboard:
   for xx,label,mask in [(115,'L',4),(158,'C',2),(201,'R',1)]:
    oval(xx-10,285,xx+10,305,accent if bits&mask else '#617487')
    text(xx,319,label,8,anchor='center')
-  text(158,341,'LINE SENSORS'+('  Â· stale' if not m.fresh('line',now) else ''),8,MUTED,anchor='center')
-  mode=m.value('mode') or 'Idle';text(303,90,'MODE',9,MUTED);text(303,113,mode+(' Â· running' if m.value('active') else ' Â· stopped'),14,bold=True)
-  batt=m.value('battery');text(303,150,'BATTERY',9,MUTED);text(630,150,'â€”' if batt is None else str(batt)+'%',11,anchor='e')
+  text(158,341,'LINE SENSORS'+('  · stale' if not m.fresh('line',now) else ''),8,MUTED,anchor='center')
+  mode=m.value('mode') or 'Idle';text(303,90,'MODE',9,MUTED);text(303,113,mode+(' · running' if m.value('active') else ' · stopped' if m.value('active') is False else ''),14,bold=True)
+  batt=m.value('battery');text(303,150,'BATTERY',9,MUTED);text(630,150,'—' if batt is None else str(batt)+'%',11,anchor='e')
   rect(303,165,630,174,'#263a4c')
   if batt is not None:rect(303,165,303+327*max(0,min(100,batt))/100,174,accent)
   def field(y,label,key):
-   value=m.value(key);out='â€”' if value is None else str(value)
+   value=m.value(key);out='—' if value is None else str(value)
    text(303,y,label,10,MUTED);text(630,y,out+(' *' if not m.fresh(key,now) else ''),10,anchor='e')
-  field(199,'Light L / R','light');field(224,'Heading Â°','heading');field(249,'Tilt X / Y / Z','acc');field(274,'Temperature Â°C','temp')
+  field(199,'Light L / R','light');field(224,'Heading °','heading');field(249,'Tilt X / Y / Z','acc');field(274,'Temperature °C','temp')
   text(303,300,'A '+('PRESSED' if m.value('a') else 'released')+'    B '+('PRESSED' if m.value('b') else 'released'),10)
   event=next((e for e in reversed(m.events) if e[1][0]!='heartbeat'),None)
   if event:
@@ -135,4 +135,10 @@ class Dashboard:
   (ROOT/'wireless_status.json').write_text(json.dumps({str(i):{'age_s':now-m.last if m.last else None,'received':m.received,'missing':m.missed,'rssi':m.rssi,'values':{k:v[0] for k,v in m.values.items()}} for i,m in self.fleet.robots.items()},indent=2))
   if not self.closed.is_set():self.root.after(150,self.refresh)
  def close(self):self.closed.set();self.root.destroy()
-if __name__=='__main__':Dashboard().root.mainloop()
+if __name__=='__main__':
+ import argparse
+ parser=argparse.ArgumentParser(description='Read-only Maqueen wireless fleet dashboard')
+ parser.add_argument('--port',default='COM5')
+ parser.add_argument('--lesson',default='lesson1-v1')
+ args=parser.parse_args()
+ Dashboard(args.port,args.lesson).root.mainloop()

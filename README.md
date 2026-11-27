@@ -13,6 +13,8 @@ Use the [latest release](https://github.com/henry8minus1/maqueen-telemetry/relea
 3. Give every robot a different ID, **1–4**. Add telemetry to its program using one of the options below.
 4. Check the dashboard for the intended **lesson tag, telemetry version and runtime**, as well as live LEDs and readings.
 
+To open a particular setup from a terminal: `python dashboard/robot_dashboard.py --port COM5 --lesson w8-v1`. The dashboard shows **MATCH** only when fresh tag/version reports match the Expected lesson field and library version 1.0.0. This is a self-reported configuration check, not proof of unmodified source.
+
 ## MakeCode: add one start block
 
 In [MakeCode](https://makecode.microbit.org/), open **Extensions** and paste:
